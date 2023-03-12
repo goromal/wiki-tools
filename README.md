@@ -16,9 +16,10 @@ Options:
   --help                    Show this message and exit.
 
 Commands:
-  get       Read the content of a DokuWiki page.
-  put       Put content onto a DokuWiki page.
-  put-file  Put content from a file onto a DokuWiki page.
+  get     Read the content of a DokuWiki page.
+  get-md  Read the content of a DokuWiki page in Markdown format.
+  put     Put content onto a DokuWiki page.
+  put-md  Put Markdown content onto a DokuWiki page.
 ```
 
 ### Get
@@ -30,6 +31,22 @@ Usage: wiki-tools get [OPTIONS]
 
 Options:
   --page-id TEXT  ID of the DokuWiki page.  [required]
+  --output TEXT   Output text file name. Will print to terminal if not
+                  specified.
+  --help          Show this message and exit.
+```
+
+### Get Markdown
+
+```bash
+Usage: wiki-tools get-md [OPTIONS]
+
+  Read the content of a DokuWiki page in Markdown format.
+
+Options:
+  --page-id TEXT  ID of the DokuWiki page.  [required]
+  --output TEXT   Output Markdown file name. Will print to terminal if not
+                  specified.
   --help          Show this message and exit.
 ```
 
@@ -42,26 +59,30 @@ Usage: wiki-tools put [OPTIONS]
 
 Options:
   --page-id TEXT  ID of the DokuWiki page.  [required]
-  --content TEXT  Content to put on the page.  [required]
+  --file PATH     File containing the target content.
+  --content TEXT  Content to put on the page if file is not specified. NOTE:
+                  This argument is mutually exclusive with content_file
   --help          Show this message and exit.
 ```
 
-### Put File
+### Put Markdown
 
 ```bash
-Usage: wiki-tools put-file [OPTIONS]
+Usage: wiki-tools put-md [OPTIONS]
 
-  Put content from a file onto a DokuWiki page.
+  Put Markdown content onto a DokuWiki page.
 
 Options:
   --page-id TEXT  ID of the DokuWiki page.  [required]
-  --file PATH     File containing the target content.  [required]
+  --file PATH     Markdown file containing the target content.
+  --content TEXT  Markdown content to put on the page if file is not
+                  specified. NOTE: This argument is mutually exclusive with
+                  content_file
   --help          Show this message and exit.
 ```
 
 ## Roadmap
 
 - Basic authenticated get/put for a page ID from strings and files [X]
-- Conversion functions and CLI to and from markdown [ ]
-- Conversion functions and CLI to and from html [ ]
+- Conversion functions and CLI to and from markdown [X]
 - More advanced error catching and diagnostic messaging [ ]

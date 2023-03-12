@@ -14,5 +14,5 @@ setup(
     author_email=about["__author_email__"],
     packages=find_packages(),
     include_package_data=True,
-    entry_points={"console_scripts":["wiki-tools=wiki_tools.wiki:main"]},
+    entry_points={"console_scripts":["wiki-tools=wiki_tools.cli:main"]},
 )
