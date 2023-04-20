@@ -1,4 +1,5 @@
 import click
+import os
 
 from wiki_tools.defaults import WikiToolsDefaults as WTD
 from wiki_tools.conversions import dokuToMarkdown, markdownToDoku
@@ -28,6 +29,18 @@ class NotRequiredIf(click.Option):
 
         return super(NotRequiredIf, self).handle_parse_result(
             ctx, opts, args)
+
+def put_impl(ctx, page_id, content_file, content):
+    if content_file is not None:
+        with open(content_file, "r") as infile:
+            content = infile.read()
+    ctx.obj.putPage(id=page_id, content=content)
+
+def put_md_impl(ctx, page_id, content_file, content):
+    if content_file is not None:
+        with open(content_file, "r") as infile:
+            content = infile.read()
+    ctx.obj.putPage(id=page_id, content=markdownToDoku(content))
 
 @click.group()
 @click.pass_context
@@ -137,10 +150,7 @@ def get_md(ctx: click.Context, page_id, output):
 )
 def put(ctx: click.Context, page_id, content_file, content):
     """Put content onto a DokuWiki page."""
-    if content_file is not None:
-        with open(content_file, "r") as infile:
-            content = infile.read()
-    ctx.obj.putPage(id=page_id, content=content)
+    put_impl(ctx, page_id, content_file, content)
 
 @cli.command()
 @click.pass_context
@@ -168,10 +178,53 @@ def put(ctx: click.Context, page_id, content_file, content):
 )
 def put_md(ctx: click.Context, page_id, content_file, content):
     """Put Markdown content onto a DokuWiki page."""
-    if content_file is not None:
-        with open(content_file, "r") as infile:
-            content = infile.read()
-    ctx.obj.putPage(id=page_id, content=markdownToDoku(content))
+    put_md_impl(ctx, page_id, content_file, content)
+
+@cli.command()
+@click.pass_context
+@click.option(
+    "--pages-dir",
+    "pages_dir",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False),
+    required=True,
+    help="Directory with .txt pages to upload."
+)
+@click.option(
+    "--namespace",
+    "namespace",
+    type=str,
+    required=True,
+    help="Namespace to upload the pages to."
+)
+def put_dir(ctx: click.Context, pages_dir, namespace):
+    """Put a directory of pages into a DokuWiki namespace."""
+    for file in os.listdir(pages_dir):
+        if file.endswith(".txt"):
+            page_id = (f"{namespace}:" if namespace else "") + file[:-4]
+            put_impl(ctx, page_id, os.path.join(pages_dir, file), None)
+
+@cli.command()
+@click.pass_context
+@click.option(
+    "--pages-dir",
+    "pages_dir",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False),
+    required=True,
+    help="Directory with .txt pages to upload."
+)
+@click.option(
+    "--namespace",
+    "namespace",
+    type=str,
+    required=True,
+    help="Namespace to upload the pages to."
+)
+def put_md_dir(ctx: click.Context, pages_dir, namespace):
+    """Put a directory of Markdown pages into a DokuWiki namespace."""
+    for file in os.listdir(pages_dir):
+        if file.endswith(".md"):
+            page_id = (f"{namespace}:" if namespace else "") + file[:-3]
+            put_md_impl(ctx, page_id, os.path.join(pages_dir, file), None)
 
 def main():
     cli()
