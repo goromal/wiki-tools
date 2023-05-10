@@ -1,5 +1,7 @@
 # Wiki-Tools
 
+![example workflow](https://github.com/goromal/wiki-tools/actions/workflows/test.yml/badge.svg)
+
 ## Commands
 
 ```bash
