@@ -1,5 +1,7 @@
 import click
 import os
+import random
+from datetime import datetime
 
 from wiki_tools.defaults import WikiToolsDefaults as WTD
 from wiki_tools.conversions import dokuToMarkdown, markdownToDoku
@@ -225,6 +227,39 @@ def put_md_dir(ctx: click.Context, pages_dir, namespace):
         if file.endswith(".md"):
             page_id = (f"{namespace}:" if namespace else "") + file[:-3]
             put_md_impl(ctx, page_id, os.path.join(pages_dir, file), None)
+
+@cli.command()
+@click.pass_context
+@click.option(
+    "--namespace",
+    "namespace",
+    type=str,
+    default="journals",
+    show_default=True,
+    help="Journal pages namespace."
+)
+@click.option(
+    "--output",
+    "output",
+    type=str,
+    default="",
+    show_default=True,
+    help="Output text file name. Will print to terminal if not specified.",
+)
+def get_rand_journal(ctx: click.Context, namespace, output):
+    """Get a random journal entry between 2013 and now."""
+    page_id = f"{namespace}:{random.choice([y for y in range(2013, datetime.now().year+1)])}"
+    entries = ctx.obj.getPage(id=page_id, as_list=True)
+    random_entry = random.choice(entries)
+    formatted_entry = f"""{random_entry[0]}
+
+{random_entry[1]}
+"""
+    if output != "":
+        with open(output, "w") as outfile:
+            outfile.write(formatted_entry)
+    else:
+        print(formatted_entry)
 
 def main():
     cli()
