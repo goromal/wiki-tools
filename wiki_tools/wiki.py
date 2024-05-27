@@ -4,6 +4,7 @@ import logging
 import sys
 
 from wiki_tools.defaults import WikiToolsDefaults as WTD
+from wiki_tools.conversions import dokuToList
 
 class WikiTools(object):
     def __init__(self, **kwargs):
@@ -19,10 +20,10 @@ class WikiTools(object):
         
         self.wiki = dokuwiki.DokuWiki(self.wiki_url, secrets["user"], secrets["pass"], cookieAuth=True)
 
-    def getPage(self, id):
+    def getPage(self, id, as_list=False):
         if self.enable_logging:
             logging.info(f"[WIKI-TOOLS] Getting page {id}")
-        return self.wiki.pages.get(id)
+        return self.wiki.pages.get(id) if not as_list else dokuToList(self.wiki.pages.get(id))
     
     def putPage(self, id, content):
         if self.enable_logging:
