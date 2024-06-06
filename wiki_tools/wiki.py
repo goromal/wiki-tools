@@ -7,6 +7,13 @@ from wiki_tools.defaults import WikiToolsDefaults as WTD
 from wiki_tools.conversions import dokuToList
 
 class WikiTools(object):
+    def _check_valid_interface(func):
+        def wrapper(self):
+            if self.wiki is None:
+                raise Exception("Wiki interface not initialized properly; check your secrets")
+            func(self)
+        return wrapper
+
     def __init__(self, **kwargs):
         self.wiki_url = WTD.getKwargsOrDefault("wiki_url", **kwargs)
         self.wiki_secrets_file = WTD.getKwargsOrDefault("wiki_secrets_file", **kwargs)
@@ -23,13 +30,15 @@ class WikiTools(object):
         except:
             pass
 
+    @_check_valid_interface
     def getPage(self, id, as_list=False):
         if self.wiki is None:
             raise Exception("Wiki interface not initialized properly; check your secrets")
         if self.enable_logging:
             logging.info(f"[WIKI-TOOLS] Getting page {id}")
         return self.wiki.pages.get(id) if not as_list else dokuToList(self.wiki.pages.get(id))
-    
+
+    @_check_valid_interface
     def putPage(self, id, content):
         if self.wiki is None:
             raise Exception("Wiki interface not initialized properly; check your secrets")
