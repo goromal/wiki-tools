@@ -57,7 +57,7 @@ def put_md_impl(ctx, page_id, content_file, content):
 @click.option(
     "--secrets-file",
     "secrets_file",
-    type=click.Path(exists=True),
+    type=click.Path(),
     default=WTD.WIKI_SECRETS_FILE,
     show_default=True,
     help="Path to the DokuWiki login secrets JSON file.",
