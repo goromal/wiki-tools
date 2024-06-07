@@ -2,16 +2,17 @@ import dokuwiki
 import json
 import logging
 import sys
+import os
 
 from wiki_tools.defaults import WikiToolsDefaults as WTD
 from wiki_tools.conversions import dokuToList
 
 class WikiTools(object):
     def _check_valid_interface(func):
-        def wrapper(self):
+        def wrapper(self, *args, **kwargs):
             if self.wiki is None:
                 raise Exception("Wiki interface not initialized properly; check your secrets")
-            func(self)
+            return func(self, *args, **kwargs)
         return wrapper
 
     def __init__(self, **kwargs):
@@ -24,7 +25,7 @@ class WikiTools(object):
             logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         
         try:
-            with open(self.wiki_secrets_file, "r") as secrets_file:
+            with open(os.path.expanduser(self.wiki_secrets_file), "r") as secrets_file:
                 secrets = json.loads(secrets_file.read())
             self.wiki = dokuwiki.DokuWiki(self.wiki_url, secrets["user"], secrets["pass"], cookieAuth=True)
         except:
