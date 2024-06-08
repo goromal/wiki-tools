@@ -2,7 +2,7 @@ import os
 
 class WikiToolsDefaults:
     WIKI_URL = "https://notes.andrewtorgesen.com"
-    WIKI_SECRETS_FILE = os.path.expanduser("~/secrets/wiki/secrets.json")
+    WIKI_SECRETS_FILE = "~/secrets/wiki/secrets.json"
     ENABLE_LOGGING = False
 
     @staticmethod
