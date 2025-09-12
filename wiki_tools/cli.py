@@ -55,12 +55,18 @@ def put_md_impl(ctx, page_id, content_file, content):
     help="URL of the DokuWiki instance (https).",
 )
 @click.option(
-    "--secrets-file",
-    "secrets_file",
-    type=click.Path(),
-    default=WTD.WIKI_SECRETS_FILE,
-    show_default=True,
-    help="Path to the DokuWiki login secrets JSON file.",
+    "--wiki-user",
+    "wiki_user",
+    type=str,
+    required=True,
+    help="Wiki account username.",
+)
+@click.option(
+    "--wiki-pass",
+    "wiki_pass",
+    type=str,
+    required=True,
+    help="Wiki account password.",
 )
 @click.option(
     "--enable-logging",
@@ -70,9 +76,9 @@ def put_md_impl(ctx, page_id, content_file, content):
     show_default=True,
     help="Whether to enable logging.",
 )
-def cli(ctx: click.Context, wiki_url, secrets_file, enable_logging):
+def cli(ctx: click.Context, wiki_url, wiki_user, wiki_pass, enable_logging):
     """Read and edit DokuWiki instance pages."""
-    ctx.obj = WikiTools(wiki_url=wiki_url, wiki_secrets_file=secrets_file, enable_logging=enable_logging)
+    ctx.obj = WikiTools(wiki_url=wiki_url, wiki_user=wiki_user, wiki_pass=wiki_pass, enable_logging=enable_logging)
 
 @cli.command()
 @click.pass_context
