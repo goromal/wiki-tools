@@ -58,14 +58,14 @@ def put_md_impl(ctx, page_id, content_file, content):
     "--wiki-user",
     "wiki_user",
     type=str,
-    required=True,
+    default="",
     help="Wiki account username.",
 )
 @click.option(
     "--wiki-pass",
     "wiki_pass",
     type=str,
-    required=True,
+    default="",
     help="Wiki account password.",
 )
 @click.option(
