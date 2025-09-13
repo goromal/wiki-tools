@@ -17,7 +17,8 @@ class WikiTools(object):
 
     def __init__(self, **kwargs):
         self.wiki_url = WTD.getKwargsOrDefault("wiki_url", **kwargs)
-        self.wiki_secrets_file = WTD.getKwargsOrDefault("wiki_secrets_file", **kwargs)
+        self.wiki_user = WTD.getKwargsOrDefault("wiki_user", **kwargs)
+        self.wiki_pass = WTD.getKwargsOrDefault("wiki_pass", **kwargs)
         self.enable_logging = WTD.getKwargsOrDefault("enable_logging", **kwargs)
         self.wiki = None
 
@@ -25,9 +26,7 @@ class WikiTools(object):
             logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
         
         try:
-            with open(os.path.expanduser(self.wiki_secrets_file), "r") as secrets_file:
-                secrets = json.loads(secrets_file.read())
-            self.wiki = dokuwiki.DokuWiki(self.wiki_url, secrets["user"], secrets["pass"], cookieAuth=True)
+            self.wiki = dokuwiki.DokuWiki(self.wiki_url, self.wiki_user, self.wiki_pass, cookieAuth=True)
         except:
             pass
 
